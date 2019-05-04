@@ -12,29 +12,31 @@ KB = 8.6e2 # constante de boltzman
 e1, e2, e3 = 0, 0, 0
 NX, Ny, Ny = 55, 55, 55
 
+run_list = np.arange(-np.pi, np.pi, PASO)
+
 for t in np.arange(0.01, 12, 1):
     tol = 1.0
     q0 = 0.1
     while tol > 0.01:
         e3 = 0 
-        for kx in np.arange(-np.pi, np.pi, PASO):
+        for kx in run_list:
             e2 = 0
-            for ky in np.arange(-np.pi, np.pi, PASO):
+            for ky in run_list:
                 e1 = 0     
-                for kz in np.arange(-np.pi, np.pi, PASO): 
+                for kz in run_list: 
                     Eak = -2 * TD * (np.cos(kx) + np.cos(ky) + np.cos(kz))
                     EakQ = -2 * TD * (np.cos(kx + np.pi) + np.cos(ky + np.pi) + np.cos(kz + np.pi))
                     Ebk = -2 * TD * (np.cos(kx) + np.cos(ky) + np.cos(kz))
                     EbkQ = -2 * TD * (np.cos(kx + np.pi) + np.cos(ky + np.pi) + np.cos(kz + np.pi))
                     
-                    eaux = J * J * q0 * q0
+                    eaux = J ** 2 * q0 ** 2
 
                     #Emas= ( (EakQ+Ebk)/2)+ math.sqrt( pow( ((EakQ-Ebk)/2),2) + eaux)
                     #Emenos= ( (EakQ+Ebk)/2)- math.sqrt( pow( ((EakQ-Ebk)/2),2) + eaux)
                     
-                    p = np.roots([1, - (EakQ + Ebk),  (EakQ * Ebk -eaux)])  
+                    p = np.roots([1, - EakQ - Ebk,  EakQ * Ebk - eaux])  
                     [EmasN, EmenosN] = p
-                    EmasmenosN = (EmasN - EmenosN)
+                    EmasmenosN = EmasN - EmenosN
 
                     #Emasmenos= (Emas-Emenos)
 
@@ -45,7 +47,7 @@ for t in np.arange(0.01, 12, 1):
                     fermimas = 1 / (1 + np.exp(betamasN))
                     fermimenos = 1 / (1 + np.exp(betamenosN))
 
-                    e1 = e1 + ((fermimenos - fermimas) / (EmasmenosN)) 
+                    e1 = e1 + ((fermimenos - fermimas) / EmasmenosN)
            #fin for kz
                   e2 = e2 + e1 
         #finforky    
