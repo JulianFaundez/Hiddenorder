@@ -77,3 +77,4 @@ for t in np.arange(0.01,12,1):
 #plt.ylabel('signal')
 plt.show()
 
+cdcdcdcdcdcdc
